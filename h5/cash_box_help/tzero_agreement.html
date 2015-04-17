@@ -1,0 +1,134 @@
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>T+0服务协议</title>
+    <style type="text/css">
+        body{
+        background:#fff
+        }
+        .form-group{margin-bottom:0;}.canshu{color:#1D8EC9;padding:0px
+        3px;}.xieyitext{font-size:14px;color:#585858;font-family:Microsoft Yahei,Hiragino Sans
+        GB,WenQuanYi Micro Hei,sans-serif;-webkit-font-smoothing:subpixel-antialiased;padding:8px
+        0;}
+        .xieyitext a{color:#4688D1;}.col-xs-3{width:90px;}.col-xs-8{padding-left:0;}.my-bar{background-color:#1D8EC9;margin-bottom:0;color:white;height:50px;}
+        .my-bar p{text-align:center;height:50px;line-height:50px;padding:0;margin:0;font-size:18px;position:relative;}
+        h1{text-align:center;}
+		#signdiv{
+			display:none;
+		}
+		#signdiv b{
+			display:inline-block;			
+		}
+		#signPic{
+			text-align:right;
+		}
+    </style>
+    <script language="javascript">
+function GetQueryString(name) {
+
+   var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
+
+   var r = window.location.search.substr(1).match(reg);
+
+   if (r!=null) return unescape(r[2]); return null;
+
+}
+
+
+
+
+    </script>
+</head>
+
+<body>
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <h1>T+0服务协议</h1>
+</nav>
+<div class="container-app">
+
+
+    <div class="container-app">
+
+        <div class="xieyi small">
+            <p>甲方（钱盒商户）：</p>
+            <p>乙方：深圳盒子支付信息技术有限公司</p>
+
+            <p>甲方是钱盒®商户通（简称钱盒）入驻商户，已经与乙方签订了钱盒服务协议，为提高钱盒的服务质量，甲乙双方就甲方使用钱盒T+0服务达成本协议。</p>
+            <ol>
+                <li>T+0服务是指钱盒为优质商户提供的，在钱盒记录的交易当日将结算资金划入甲方指定账户，并加收额外服务费的特殊服务，甲方使用T+0服务必须遵守本协议。</li>
+                <li>T+0服务的服务时间：见常用帮助。</li>
+                <li>甲方选择T+0服务时，钱盒将额外加收服务费，额外服务费将在正常钱盒服务（T+1）费率的基础上增加 0.2%，例如正常钱盒服务的费率为0.78%，如果商户选择T+0服务，则费率为0.98%。乙方有权单方调整额外加收服务费的收费标准、费率。</li>
+                <li>甲方获得T+0服务资格后，钱盒将为甲方设定T+0服务的额度，甲方每日通过钱盒的收款总金额将不得超过钱盒设定的额度。</li>
+                <li>甲方理解并同意，根据甲方的业务情况和风险情况，乙方有权调整甲方额度。甲方根据实际业务需求，可向乙方申请提高或者降低额度。</li>
+                <li>乙方将尽最大努力保障T+0服务的清算时效，甲方理解并同意，若乙方无法按照本协议约定的时间完成清算时，乙方将按照正常钱盒服务标准清算，并按照正常钱盒服务的费率标准收取服务费，乙方的最大责任是退回按照本协议约定加收的额外服务费，除此之外，乙方不承担其他违约责任。</li>
+                <li>乙方有权根据风险情况或业务情况暂停、停止T+0服务。</li>
+                <li>使用T+0服务进行收款，一旦交易成功，不可撤销。</li>
+                <li>甲方在使用T+0服务时须同时遵守钱盒服务协议，本协议未约定的，依照钱盒服务协议处理，本协议与钱盒服务协议相冲突时以本协议为准。</li>
+            </ol>
+
+            <div id="signdiv" align="right">
+                <div id="signPic" style="width:230.0px;height:100.0px;background-size:cover;"></div>
+                <b>本合同签订于:
+                    <script language="javascript">
+				var d = new Date();
+				document.write(d.getFullYear()+"年");
+				document.write((d.getMonth()+1)+"月");
+				document.write(d.getDate()+"日");
+                    </script>
+                </b>
+            </div>			
+        </div>
+    </div>
+</div>
+<script language="javascript">
+window.onload = function(){
+	var divHs = GetQueryString("hassign");
+	//document.getElementById('signdiv').style.display="none";
+
+    //如果有传 用户签名，就加载图片、滚到底部
+    if(divHs){
+        loadImg(divHs);
+        scrollButtom();
+    }
+}
+function showImg(){
+		document.getElementById('signdiv').style.display="block"
+}
+function loadImg(strData){
+	//showImg();
+	document.getElementById('signdiv').style.display="block";
+	document.getElementById('signPic').style.backgroundImage="url(\"data:image/png;base64,"+strData+"\")";
+}
+var currentPosition,timer;
+
+function runTo(){
+    currentPosition=document.documentElement.scrollTop || document.body.scrollTop;
+    var a = document.documentElement.scrollTop==0? document.body.clientHeight : document.documentElement.clientHeight;
+	var b = document.documentElement.scrollTop==0? document.body.scrollTop : document.documentElement.scrollTop;
+	var c = document.documentElement.scrollTop==0? document.body.scrollHeight : document.documentElement.scrollHeight;
+    currentPosition+=easyFade(c,a+b)+1;
+    //console.log("aaaa"+currentPosition)
+    if(a+b<c-80)
+    {
+        window.scrollTo(0,currentPosition);
+    }
+    else
+    {
+        window.scrollTo(0,document.body.scrollHeight);
+        clearInterval(timer);
+    }
+}
+function scrollButtom(){
+        timer=setInterval("runTo()",20);
+     // window.scrollTo(0,document.body.scrollHeight+80);
+}
+function easyFade(lenth,position){
+  var rs= 2*Math.sin(Math.PI*(position/lenth));
+  return 40*rs.toFixed(1);
+}
+</script>
+
+</body>
+</html>
