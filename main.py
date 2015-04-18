@@ -52,7 +52,11 @@ class myHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(f.read())
                 f.close()
-            return
+            else:
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+                self.wfile.write(u"没有找到响应请求")
 
         except IOError:
             self.send_error(404, 'File Not Found: %s' % self.path)
