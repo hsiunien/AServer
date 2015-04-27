@@ -7,7 +7,7 @@ sys.setdefaultencoding('utf-8')
 """
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from os import curdir, sep, path
-import cgi
+import my_cgi
 import logging
 import time
 import codecs
@@ -60,7 +60,7 @@ class myHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         logging.warning(self.headers)
-        form = cgi.FieldStorage(
+        form = my_cgi.FieldStorage(
             fp=self.rfile,
             headers=self.headers,
             environ={'REQUEST_METHOD': 'POST',

@@ -7,10 +7,14 @@ sys.setdefaultencoding('utf-8')
 """
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import os
-import cgi
 import time
 import codecs
 import sys
+import cgi
+
+from my_cgi.dispatcher import Dispatcher
+
+
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -24,7 +28,6 @@ class myHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/":
             self.path = "/index.html"
-
         try:
             # 根据请求的文件扩展名，设置正确的mime类型
             sendReply = False
@@ -74,31 +77,35 @@ class myHandler(BaseHTTPRequestHandler):
         for key in keys:
             params += key + "=" + form.getvalue(key, "") + "\n"
         print params[:len(params) - 1]
+        if self.path.startswith("/cgi/"):
+            print("dispatcher", self.path)
+            dispatcher=Dispatcher(self.path, self)
 
-        # 读取相应的静态资源文件，并发送它
-        full_file_path = os.curdir + os.sep + self.path
-        if os.path.isfile(full_file_path):
-            file_out = open(full_file_path, 'rb')
-            full_text = file_out.read()
-            file_out.close()
-            self.send_response(200)
-            self.end_headers()
-            if len(full_text) > 0:
-                self.wfile.write(full_text)
-                print(full_text)
-            else:
-                self.wfile.write(u"{\"status\":1,\"remark\":\"请求处理不存在\"}")
         else:
-            self.send_response(200)
-            self.end_headers()
-            retstr = u"{\"status\":-1,\"remark\":\"请求处理不存在,新建处理\"}"
-            self.wfile.write(retstr)
-            if not os.path.exists(os.path.split(full_file_path)[0]):
-                os.makedirs(os.path.split(full_file_path)[0])
-            fwrite = codecs.open(full_file_path, 'wb', 'utf-8')
-            fwrite.write(retstr)
-            fwrite.close()
-            print retstr, "已保存到文件，路径:", full_file_path
+            # 读取相应的静态资源文件，并发送它
+            full_file_path = os.curdir + os.sep + self.path
+            if os.path.isfile(full_file_path):
+                file_out = open(full_file_path, 'rb')
+                full_text = file_out.read()
+                file_out.close()
+                self.send_response(200)
+                self.end_headers()
+                if len(full_text) > 0:
+                    self.wfile.write(full_text)
+                    print(full_text)
+                else:
+                    self.wfile.write(u"{\"status\":1,\"remark\":\"请求处理不存在\"}")
+            else:
+                self.send_response(200)
+                self.end_headers()
+                retstr = u"{\"status\":-1,\"remark\":\"请求处理不存在,新建处理\"}"
+                self.wfile.write(retstr)
+                if not os.path.exists(os.path.split(full_file_path)[0]):
+                    os.makedirs(os.path.split(full_file_path)[0])
+                fwrite = codecs.open(full_file_path, 'wb', 'utf-8')
+                fwrite.write(retstr)
+                fwrite.close()
+                print retstr, "已保存到文件，路径:", full_file_path
 
 
 def get_data_string(self):
