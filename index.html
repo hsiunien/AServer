@@ -1,12 +1,40 @@
 <!DOCTYPE html>
-<html ng-app>
+<html>
 <head lang="en">
     <meta charset="UTF-8">
     <title>ATest</title>
-    <script type="text/javascript" src=".js/angular.js"></script>
+    <script type="text/javascript" src=".js/angular-1.0.2.js"></script>
+    <script type="text/javascript">
+     var HelloController=function($scope){
+     $scope.name="hugh";
+     $scope.getName=function(){
+     return $scope.name;
+     }
+     }
+     var WorldCtrl=function($scope){
+        $scope.population=7000;
+        $scope.countries=[
+        {name:'china',population:68},
+        {name:'japan',population:58}
+        ];
+     }
+
+
+
+    </script>
 </head>
-<body>
-Hello {{'World'}}!
-<p> 1+128={{1+128}}</p>
+<body ng-app>
+<div ng-controller="HelloController">
+    Say Hello To<input type="text" ng-model="name"><br>
+    Hello {{getName()}}!
+    <p> 1+128={{1+128}}</p>
+
+    <ul ng-controller="WorldCtrl">
+        <li ng-repeat="country in countries">
+            {{country.name}} 's population is{{country.population}}
+        </li>
+    </ul>
+
+</div>
 </body>
 </html>
