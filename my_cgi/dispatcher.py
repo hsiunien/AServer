@@ -33,20 +33,26 @@ class Dispatcher:
         return
 
     def list_project(self, keyWord):
-        data = {"keyword": keyWord}
+        data = {"keyWord": keyWord}
         data["list"] = self.scan_files(os.curdir + os.sep, keyWord)
         self.return_data(data)
 
     def scan_files(self, directory, keyword):
         files_list = []
+
         for root, sub_dirs, files in os.walk(directory):
             for special_file in files:
+                path = os.path.join(root, special_file)
                 if keyword:
-                    path = os.path.join(root, special_file)
-                    if keyword in path:
+                    if keyword in path and (".git" not in path):
                         files_list.append(path)
                 else:
-                    files_list.append(os.path.join(root, special_file))
-
+                    if not self.check_folder_in([".git", ".js", ".idea", "my_cgi"], path):
+                        files_list.append(os.path.join(root, special_file))
         return files_list
 
+    def check_folder_in(self, excepts, path):
+        for e in excepts:
+            if e in path:
+                return True
+        return False
