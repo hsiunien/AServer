@@ -15,7 +15,6 @@ import cgi
 from my_cgi.dispatcher import Dispatcher
 
 
-
 reload(sys)
 sys.setdefaultencoding("utf-8")
 print sys.getdefaultencoding()
@@ -77,9 +76,10 @@ class myHandler(BaseHTTPRequestHandler):
         for key in keys:
             params += key + "=" + form.getvalue(key, "") + "\n"
         print params[:len(params) - 1]
+
         if self.path.startswith("/cgi/"):
             print("dispatcher", self.path)
-            dispatcher=Dispatcher(self.path, self)
+            dispatcher = Dispatcher(self.path, self, form)
 
         else:
             # 读取相应的静态资源文件，并发送它

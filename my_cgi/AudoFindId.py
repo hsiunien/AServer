@@ -1,4 +1,7 @@
 __author__ = 'wangxiunian'
+#
+#用于android layout findviewbyID
+#
 from xml.dom import minidom, Node
 import os
 
