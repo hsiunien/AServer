@@ -44,7 +44,7 @@ class Dispatcher:
             for special_file in files:
                 path = os.path.join(root, special_file)
                 if keyword:
-                    if keyword in path and (".git" not in path):
+                    if keyword in path and not self.check_folder_in([".git", ".js", ".idea", "my_cgi"], path):
                         files_list.append(path)
                 else:
                     if not self.check_folder_in([".git", ".js", ".idea", "my_cgi"], path):
@@ -53,6 +53,9 @@ class Dispatcher:
 
     def check_folder_in(self, excepts, path):
         for e in excepts:
-            if e in path:
+            if path.startswith(os.path.curdir + os.sep + e) or path.endswith(".py"):
                 return True
         return False
+
+
+print(os.path.curdir + os.sep + ".js" + os.sep)
