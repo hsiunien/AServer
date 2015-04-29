@@ -67,8 +67,8 @@ class myHandler(BaseHTTPRequestHandler):
         form = cgi.FieldStorage(
             fp=self.rfile,
             headers=self.headers,
-            environ={'REQUEST_METHOD': 'POST',
-                     'CONTENT_TYPE': self.headers['Content-Type'],
+            environ={'REQUEST_METHOD': 'POST'
+                     # 'CONTENT_TYPE': self.headers['Content-Type'],
             })
         print self.path
         keys = form.keys()
