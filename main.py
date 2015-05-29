@@ -66,7 +66,6 @@ class myHandler(BaseHTTPRequestHandler):
             self.send_error(404, 'File Not Found: %s' % self.path)
 
     def do_POST(self):
-        form = cgi.FieldStorage()
         print self.path
         print self.headers
         ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
@@ -77,12 +76,24 @@ class myHandler(BaseHTTPRequestHandler):
             dict = JSONDecoder().decode(postStr)
             dispatcher = CashboxApiDispatcher(dict["serviceId"], dict["requestBody"], self, dict)
         else:
+            form = cgi.FieldStorage(
+                fp=self.rfile,
+                headers=self.headers,
+                environ={'REQUEST_METHOD': 'POST'
+                         # 'CONTENT_TYPE': self.headers['Content-Type'],
+                })
             params = ""
             if form.list is not None:
                 keys = form.keys()
                 for key in keys:
-                    params += key + "=" + form.getvalue(key, "") + "\n"
-                print params[:len(params) - 1]
+                    if key == "image":
+                        fwrite = codecs.open(os.curdir + os.sep + key + ".jpg", 'wb')
+                        fwrite.write(form.getvalue(key, "none"))
+                        fwrite.close()
+                        print("found file" + key)
+                    else:
+                        params += key + "=" + form.getvalue(key, "") + "\n"
+                print params
             if self.path.startswith("/cgi/"):
                 print("dispatcher", self.path)
                 dispatcher = Dispatcher(self.path, self, form)
