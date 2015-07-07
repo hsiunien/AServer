@@ -69,7 +69,7 @@ class myHandler(BaseHTTPRequestHandler):
         print self.path
         print self.headers
         ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
-        if ctype == 'text/plain':
+        if ctype == 'text/plain' or ctype == "application/json":
             length = int(self.headers.getheader('content-length'))
             postStr = self.rfile.read(length)
             print(postStr)
