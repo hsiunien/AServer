@@ -1,6 +1,8 @@
+#!/usr/bin/python
+# coding=utf-8
 __author__ = 'wangxiunian'
 #
-#用于android layout findviewbyID
+# 用于android layout findviewbyID
 #
 from xml.dom import minidom, Node
 import os
@@ -87,4 +89,10 @@ for inputPath in files:
         print(out)
         file_output.write(out + "\n")
 
+    file_output.write("----------------final InjectView -----------------------\n\n")
+    for item in l:
+        out = "@ViewInject(id = " + item[1] + ")\nprivate " + item[0] + " " + item[2] + ";"
+        print(out)
+        file_output.write(out + "\n")
+    print()
     file_output.close()
