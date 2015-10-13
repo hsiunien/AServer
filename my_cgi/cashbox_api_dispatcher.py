@@ -16,7 +16,7 @@ class CashboxApiDispatcher:
 
     def return_data(self, serverId):
         # 读取相应的静态资源文件，并发送它
-        full_file_path = os.curdir + os.sep + self.basePreStr + serverId + ".txt"
+        full_file_path = os.curdir + os.sep + self.basePreStr + serverId + ".json"
         if os.path.isfile(full_file_path):
             file_out = open(full_file_path, 'rb')
             full_text = file_out.read()

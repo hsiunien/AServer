@@ -109,3 +109,6 @@ docs/_build/
 target/
 
 cashbox/
+fspf-cashbox/weixin/
+robbit/
+
