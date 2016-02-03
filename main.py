@@ -15,13 +15,14 @@ from json import JSONDecoder
 
 from my_cgi.dispatcher import Dispatcher
 from my_cgi.cashbox_api_dispatcher import CashboxApiDispatcher
+from my_cgi.tpfDispatcher import TpfDispatcher
 
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
 print sys.getdefaultencoding()
 
-PORT_NUMBER = 8888
+PORT_NUMBER = 9001
 RES_FILE_DIR = "."
 
 
@@ -35,6 +36,9 @@ class myHandler(BaseHTTPRequestHandler):
             if self.path.endswith(".html"):
                 mimetype = 'text/html'
                 sendReply = True
+            if self.path.endswith(".xml"):
+                mimetype = 'text/xml'
+                sendReply = True
             if self.path.endswith(".jpg"):
                 mimetype = 'image/jpg'
                 sendReply = True
@@ -47,29 +51,43 @@ class myHandler(BaseHTTPRequestHandler):
             if self.path.endswith(".css"):
                 mimetype = 'text/css'
                 sendReply = True
+            if self.path.endswith(".json"):
+                mimetype = 'application/json'
+                sendReply = True
 
             if sendReply == True:
                 # 读取相应的静态资源文件，并发送它
                 f = open(os.curdir + os.sep + self.path, 'rb')
                 self.send_response(200)
-                self.send_header('Content-type', mimetype)
+                self.send_header('Content-type', "application")
                 self.end_headers()
                 self.wfile.write(f.read())
                 f.close()
             else:
-                self.send_response(200)
-                self.send_header('Content-type', 'text/html')
-                self.end_headers()
-                self.wfile.write(u"没有找到响应请求")
+                exist = os.path.exists(os.curdir + os.sep + self.path)
+                if exist:
+                    f = open(os.curdir + os.sep + self.path, 'rb')
+                    mimetype = 'application/octet-stream'
+                    self.send_response(200)
+                    self.send_header('Content-type', "application")
+                    self.end_headers()
+                    self.wfile.write(f.read())
+                    f.close()
+                else:
+                    self.send_response(404)
+                    self.send_header('Content-type', 'text/html')
+                    self.end_headers()
+                    self.wfile.write(u"没有找到响应请求")
 
         except IOError:
             self.send_error(404, 'File Not Found: %s' % self.path)
+
 
     def do_POST(self):
         print self.path
         print self.headers
         ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
-        if ctype == 'text/plain' or ctype == "application/json":
+        if self.path.endswith("gateway.htm") and (ctype == 'text/plain' or ctype == "application/json"):
             length = int(self.headers.getheader('content-length'))
             postStr = self.rfile.read(length)
             print(postStr)
@@ -97,6 +115,8 @@ class myHandler(BaseHTTPRequestHandler):
             if self.path.startswith("/cgi/"):
                 print("dispatcher", self.path)
                 dispatcher = Dispatcher(self.path, self, form)
+            elif self.path.startswith("/sdkBS/"):
+                dispatcher = TpfDispatcher(self, self.path)
             else:
                 # 读取相应的静态资源文件，并发送它
                 full_file_path = os.curdir + os.sep + self.path
@@ -121,7 +141,7 @@ class myHandler(BaseHTTPRequestHandler):
                     fwrite = codecs.open(full_file_path, 'wb', 'utf-8')
                     fwrite.write(retstr)
                     fwrite.close()
-                    print retstr, "已保存到文件，路径:", full_file_path
+                    print retstr, "请求已保存到文件，路径:", full_file_path
 
 
 def get_data_string(self):
