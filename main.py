@@ -125,16 +125,17 @@ class myHandler(BaseHTTPRequestHandler):
                     full_text = file_out.read()
                     file_out.close()
                     self.send_response(200)
+                    self.send_header('Content-type', 'application/json')
                     self.end_headers()
                     if len(full_text) > 0:
                         self.wfile.write(full_text)
                         print(full_text)
                     else:
-                        self.wfile.write(u"{\"status\":1,\"remark\":\"请求处理不存在\"}")
+                        self.wfile.write(u"{\"resultCode\":1,\"errorCode\":\"10021\",\"desc\":\"描述\"}")
                 else:
                     self.send_response(200)
                     self.end_headers()
-                    retstr = u"{\"status\":-1,\"remark\":\"请求处理不存在,新建处理\"}"
+                    retstr = u"{\"resultCode\":-1,\"remark\":\"请求处理不存在,新建处理\",\"errorCode\":\"err-01\"}"
                     self.wfile.write(retstr)
                     if not os.path.exists(os.path.split(full_file_path)[0]):
                         os.makedirs(os.path.split(full_file_path)[0])

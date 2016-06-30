@@ -14,10 +14,11 @@
      var WorldCtrl=function($scope){
         $scope.population=7000;
         $scope.countries=[
-        {name:'china',population:68},
+        {name:'china',population:78},
         {name:'japan',population:58}
         ];
      }
+
 
 
 
@@ -31,10 +32,11 @@
 
     <ul ng-controller="WorldCtrl">
         <li ng-repeat="country in countries">
-            {{country.name}} 's population is{{country.population}}
+            {{country.name}} 's population is {{country.population}}
         </li>
     </ul>
-    <a href="login.html">登录</a> <a href="http://www.json.org.cn/tools/JSONEditorOnline/index.htm">Json在线编辑</a>
+    <a href="login.html">登录</a>
+    <a href="http://www.json.org.cn/tools/JSONEditorOnline/index.htm" target="_blank">Json在线编辑</a>
 
 </div>
 </body>
