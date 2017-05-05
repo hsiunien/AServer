@@ -11,6 +11,7 @@ import time
 import codecs
 import sys
 import cgi
+import urlparse
 from json import JSONDecoder
 
 from my_cgi.dispatcher import Dispatcher
@@ -32,6 +33,11 @@ class myHandler(BaseHTTPRequestHandler):
             self.path = "/index.html"
         try:
             # 根据请求的文件扩展名，设置正确的mime类型
+            parsed_path = urlparse.urlparse(self.path)
+            tp = parsed_path.query
+
+            print(tp)
+            self.path = self.path.split("?")[0]
             sendReply = False
             if self.path.endswith(".html"):
                 mimetype = 'text/html'
@@ -54,7 +60,9 @@ class myHandler(BaseHTTPRequestHandler):
             if self.path.endswith(".json"):
                 mimetype = 'application/json'
                 sendReply = True
-
+            if self.path.endswith(".css"):
+                mimetype = 'text/css'
+                sendReply = True
             if sendReply == True:
                 # 读取相应的静态资源文件，并发送它
                 f = open(os.curdir + os.sep + self.path, 'rb')
@@ -86,7 +94,8 @@ class myHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         print self.path
         print self.headers
-        ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
+        if self.headers.getheader('content-type') is not None:
+            ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
         if self.path.endswith("gateway.htm") and (ctype == 'text/plain' or ctype == "application/json"):
             length = int(self.headers.getheader('content-length'))
             postStr = self.rfile.read(length)
@@ -94,24 +103,38 @@ class myHandler(BaseHTTPRequestHandler):
             dict = JSONDecoder().decode(postStr)
             dispatcher = CashboxApiDispatcher(dict["serviceId"], dict["requestBody"], self, dict)
         else:
-            form = cgi.FieldStorage(
-                fp=self.rfile,
-                headers=self.headers,
-                environ={'REQUEST_METHOD': 'POST'
-                         # 'CONTENT_TYPE': self.headers['Content-Type'],
-                })
-            params = ""
-            if form.list is not None:
-                keys = form.keys()
-                for key in keys:
-                    if key == "image":
-                        fwrite = codecs.open(os.curdir + os.sep + key + ".jpg", 'wb')
-                        fwrite.write(form.getvalue(key, "none"))
-                        fwrite.close()
-                        print("found file" + key)
-                    else:
-                        params += key + "=" + form.getvalue(key, "") + "\n"
-                print params
+            # 打印请求参数
+            if ctype == 'text/plain' or ctype == "application/json":
+                length = int(self.headers.getheader('content-length'))
+                postStr = self.rfile.read(length)
+                print(postStr)
+            else:
+                form = cgi.FieldStorage(
+                    fp=self.rfile,
+                    headers=self.headers,
+                    environ={'REQUEST_METHOD': 'POST'
+                             # 'CONTENT_TYPE': self.headers['Content-Type'],
+                    })
+                params = ""
+                if form.list is not None:
+                    keys = form.keys()
+                    for key in keys:
+                        if key == "image":
+                            fwrite = codecs.open(os.curdir + os.sep + key + ".jpg", 'wb')
+                            fwrite.write(form.getvalue(key, "none"))
+                            fwrite.close()
+                            print("found file" + key)
+                        elif key == "images":
+                            list = form.getlist(key);
+                            for img in list:
+                                fwrite = codecs.open(os.curdir + os.sep + key + ".jpg", 'wb')
+                                fwrite.write(img)
+                                fwrite.close()
+                                # print("list:" + list)
+                        else:
+                            params += key + "=" + form.getvalue(key, "") + "\n"
+                    print params
+
             if self.path.startswith("/cgi/"):
                 print("dispatcher", self.path)
                 dispatcher = Dispatcher(self.path, self, form)
@@ -135,7 +158,7 @@ class myHandler(BaseHTTPRequestHandler):
                 else:
                     self.send_response(200)
                     self.end_headers()
-                    retstr = u"{\"resultCode\":-1,\"remark\":\"请求处理不存在,新建处理\",\"errorCode\":\"err-01\"}"
+                    retstr = u"{\"resultCode\":-1,\"errorDesc\":\"请求处理不存在,新建处理\",\"errorCode\":\"err-01\"}"
                     self.wfile.write(retstr)
                     if not os.path.exists(os.path.split(full_file_path)[0]):
                         os.makedirs(os.path.split(full_file_path)[0])

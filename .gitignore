@@ -108,12 +108,13 @@ docs/_build/
 # PyBuilder
 target/
 
+koudaisudi/
 cashbox/
-fspf-cashbox/weixin/
+fspf-cashbox/
 robbit/
 iboxpay/
 sdkBs/
-getway/
+geteway/
 blog/
 
 
